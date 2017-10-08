@@ -117,7 +117,10 @@ t_CKBOOL kb_initscr()
 {
     if( g_init ) return FALSE;
 
-#ifndef __PLATFORM_WIN32__
+
+// TODO EMSCRIPTEN: This part of console was disabled
+    return FALSE;
+/*#ifndef __PLATFORM_WIN32__
 
 #ifdef __PLATFORM_MACOSX__
     struct termios term;
@@ -151,7 +154,7 @@ t_CKBOOL kb_initscr()
 #endif
 
     g_init = TRUE;
-    return TRUE;
+    return TRUE;*/
 }
 
 
@@ -160,7 +163,9 @@ void kb_endwin()
 {
     if( !g_init ) return;
 
-#ifndef __PLATFORM_WIN32__
+// TODO EMSCRIPTEN: this part of console was disabled
+
+/*#ifndef __PLATFORM_WIN32__
 #ifdef __PLATFORM_MACOSX__
     ioctl( 0, TIOCSETA, &g_save );
 #else
@@ -168,7 +173,7 @@ void kb_endwin()
 #endif
 #endif
 
-    g_init = FALSE;
+    g_init = FALSE;*/
 }
 
 

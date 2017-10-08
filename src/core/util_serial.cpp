@@ -34,10 +34,10 @@
 #include "util_serial.h"
 #include "chuck_errmsg.h"
 
-
+// TODO EMSCRIPTEN
 #if defined(__MACOSX_CORE__) && !defined(__CHIP_MODE__)
 
-#include <CoreFoundation/CoreFoundation.h>
+/*#include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOKitLib.h>
 #include <IOKit/serial/IOSerialKeys.h>
 #include <IOKit/IOBSD.h>
@@ -116,7 +116,7 @@ cleanup:
 }
 
 #elif defined(__PLATFORM_LINUX__)
-
+*/
 
 #include <sys/types.h>
 #include <dirent.h>

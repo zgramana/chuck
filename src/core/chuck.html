@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="./chuckO0.js"></script>
+<script>
+    // wrapped functions: init, run, compilecode
+    chuckscript_init = Module.cwrap('chuckscript_init', 'number', 'number', 'number');
+    chuckscript_run = Module.cwrap('chuckscript_run', 'number', 'number', 'number');
+    chuckscript_compilecode = Module.cwrap('chuckscript_compilecode', 'string' );
+</script>
+
+
+<h1>ChucK</h1>
+<p>Hi.</p>
+<button>Play</button>
+
+
+<script>
+    // script processor node boilerplate
+//     var myScript = document.querySelector('script');
+//     var myPre = document.querySelector('pre');
+    var playButton = document.querySelector('button');
+      
+    // Create AudioContext and buffer source
+    var audioCtx = new AudioContext();
+    source = audioCtx.createBufferSource();
+    
+    var inChannels = 1;
+    var outChannels = 1;
+    var bufferSize = 4096;
+
+    // Create a ScriptProcessorNode with a bufferSize of 4096 and a single input and output channel
+    var scriptNode = audioCtx.createScriptProcessor(bufferSize, inChannels, outChannels);
+    console.log(scriptNode.bufferSize);
+
+
+    // Give the node a function to process audio events
+    scriptNode.onaudioprocess = function(audioProcessingEvent) {
+        // The input buffer is the song we loaded earlier
+        var inputBuffer = audioProcessingEvent.inputBuffer;
+
+        // The output buffer contains the samples that will be modified and played
+        var outputBuffer = audioProcessingEvent.outputBuffer;
+
+        // PROBLEM: no way to get interleaved channels... >_>
+    
+        chuckscript_run( inputBuffer.getChannelData(0), outputBuffer.getChannelData(0), bufferSize );
+    }
+
+
+    // wire up play button
+    playButton.onclick = function() {
+        // init
+        chuckscript_init( inChannels, outChannels, audioCtx.sampleRate );      
+        
+        // boilerplate
+        source.connect(scriptNode);
+        scriptNode.connect(audioCtx.destination);
+        source.start();
+        
+        // compile
+        chuckscript_compilecode( "SinOsc foo => dac; 2::second => now;" );
+    }
+
+</script>
+</body>
+</html>

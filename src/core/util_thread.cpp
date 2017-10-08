@@ -461,6 +461,8 @@ t_CKINT XThreadUtil::our_priority = 0x7fffffff;
 //-----------------------------------------------------------------------------
 t_CKBOOL XThreadUtil::set_priority( CHUCK_THREAD tid, t_CKINT priority )
 {
+// TODO EMSCRIPTEN: fix
+/*
     struct sched_param param;
     int policy;
     
@@ -478,7 +480,7 @@ t_CKBOOL XThreadUtil::set_priority( CHUCK_THREAD tid, t_CKINT priority )
     // set for thread, pthread style
     if( pthread_setschedparam( tid, policy, &param ) )
         return FALSE;
-    
+*/    
     return TRUE;
 }
 //-----------------------------------------------------------------------------

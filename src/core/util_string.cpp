@@ -367,7 +367,14 @@ done:
 
 char* CreatePathByExpandingTildePath(const char* path)
 {
-    glob_t globbuf;
+    // TODO EMSCRIPTEN: fix
+    char * result = (char*) calloc(1, strlen(path)+1);
+    if( result )
+        strncpy( result, path, strlen(path) + 1 );
+    return result;
+    
+    
+/*    glob_t globbuf;
     char **v;
     char *expandedPath = NULL, *result = NULL;
     
@@ -383,7 +390,7 @@ char* CreatePathByExpandingTildePath(const char* path)
             strncpy(result, expandedPath, strlen(expandedPath) + 1); //copy the null-termination as well
         
         globfree(&globbuf);
-    }
+    }*/
     
     return result;
 }

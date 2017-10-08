@@ -27,8 +27,10 @@ endif
 ifneq ($(CHUCK_DEBUG),)
 CFLAGS+= -g
 else
-CFLAGS+= -O3
+#CFLAGS+= -O3 # -------------- FOR NOW, NO 03
 endif
+
+EM_OPTLEVEL=O0
 
 ifneq ($(USE_64_BIT_SAMPLE),)
 CFLAGS+= -D__CHUCK_USE_64_BIT_SAMPLE__
@@ -45,6 +47,10 @@ endif
 
 ifneq (,$(strip $(filter osx bin-dist-osx,$(MAKECMDGOALS))))
 include makefile.x/makefile.osx
+endif
+
+ifneq (,$(strip $(filter emscripten,$(MAKECMDGOALS))))
+include makefile.x/makefile.osx_emscripten
 endif
 
 ifneq (,$(strip $(filter linux-pulse,$(MAKECMDGOALS))))
@@ -68,6 +74,7 @@ include makefile.x/makefile.rl
 endif
 
 ########################## CHUCK CORE LIB TARGETS ##############################
+##### #midiio_rtmidi.cpp rtmidi.cpp hidio_sdl.cpp util_hid.cpp \ 
 CSRCS_CORE+= chuck.tab.c chuck.yy.c util_math.c util_network.c util_raw.c \
 	util_xforms.c
 CXXSRCS_CORE+= chuck_absyn.cpp chuck_parse.cpp chuck_errmsg.cpp \
@@ -75,12 +82,12 @@ CXXSRCS_CORE+= chuck_absyn.cpp chuck_parse.cpp chuck_errmsg.cpp \
 	chuck_vm.cpp chuck_instr.cpp chuck_scan.cpp chuck_type.cpp \
 	chuck_emit.cpp chuck_compile.cpp chuck_dl.cpp chuck_oo.cpp \
 	chuck_lang.cpp chuck_ugen.cpp chuck_otf.cpp chuck_stats.cpp \
-	chuck_shell.cpp chuck_io.cpp hidio_sdl.cpp chuck.cpp \
-	midiio_rtmidi.cpp rtmidi.cpp ugen_osc.cpp ugen_filter.cpp \
+	chuck_shell.cpp chuck_io.cpp chuck.cpp \
+	ugen_osc.cpp ugen_filter.cpp \
 	ugen_stk.cpp ugen_xxx.cpp ulib_machine.cpp ulib_math.cpp ulib_std.cpp \
 	ulib_opsc.cpp ulib_regex.cpp util_buffers.cpp util_console.cpp \
 	util_string.cpp util_thread.cpp util_opsc.cpp util_serial.cpp \
-	util_hid.cpp uana_xform.cpp uana_extract.cpp
+	uana_xform.cpp uana_extract.cpp
 LO_CSRCS+= lo/address.c lo/blob.c lo/bundle.c lo/message.c lo/method.c \
     lo/pattern_match.c lo/send.c lo/server.c lo/server_thread.c lo/timetag.c
 ################################################################################
@@ -92,6 +99,11 @@ COBJS=$(CSRCS:.c=.o)
 CXXOBJS=$(CXXSRCS:.cpp=.o)
 LO_COBJS=$(LO_CSRCS:.c=.o)
 OBJS=$(COBJS) $(CXXOBJS) $(LO_COBJS)
+
+BCCOBJS=$(CSRCS:.c=.bc)
+BCCXXOBJS=$(CXXSRCS:.cpp=.bc)
+LO_BCCOBJS=$(LO_CSRCS:.c=.bc)
+BCOBJS=$(BCCOBJS) $(BCCXXOBJS) $(LO_BCCOBJS)
 
 LO_CFLAGS=-DHAVE_CONFIG_H -I.
 
@@ -118,6 +130,10 @@ CK_SVN=https://chuck-dev.stanford.edu/svn/chuck/
 chuck-core: $(OBJS)
 	@echo '[chuck-core]: all components built...'
 
+emscripten: $(BCOBJS)
+	@echo '[emscripten]: all .bc components built...'
+	emcc -$(EM_OPTLEVEL) $(BCOBJS) -o chuck$(EM_OPTLEVEL).js -s EXPORTED_FUNCTIONS="['_chuckscript_init', '_chuckscript_run', '_chuckscript_compilecode']"
+
 chuck.tab.c chuck.tab.h: chuck.y
 	$(YACC) -dv -b chuck chuck.y
 
@@ -143,8 +159,22 @@ $(LO_COBJS): %.o: %.c
 	$(CC) $(CFLAGS) $(LO_CFLAGS) $(ARCHOPTS) -c $< -o $@
 	@$(CC) -MM -MQ "$@" $(CFLAGSDEPEND) $(LO_CFLAGS) $< > $*.d
 
+
+
+$(BCCXXOBJS): %.bc: %.cpp
+	emcc -$(EM_OPTLEVEL) $(CFLAGS) $(ARCHOPTS) -c $< -o $@
+# 	@$(CXX) -MM -MQ "$@" $(CFLAGSDEPEND) $< > $*.d
+
+$(BCCOBJS): %.bc: %.c
+	emcc -$(EM_OPTLEVEL) $(CFLAGS) $(ARCHOPTS) -c $< -o $@
+# 	@$(CC) -MM -MQ "$@" $(CFLAGSDEPEND) $< > $*.d
+
+$(LO_BCCOBJS): %.bc: %.c
+	emcc -$(EM_OPTLEVEL) $(CFLAGS) $(LO_CFLAGS) $(ARCHOPTS) -c $< -o $@
+# 	@$(CC) -MM -MQ "$@" $(CFLAGSDEPEND) $(LO_CFLAGS) $< > $*.d
+
 clean: 
-	@rm -rf *.o *.d $(OBJS) \
+	@rm -rf *.o *.d *.bc $(BCOBJS) $(OBJS) \
          $(patsubst %.o,%.d,$(OBJS)) *~ chuck.output chuck.tab.h chuck.tab.c \
          chuck.yy.c $(DIST_DIR){,.tgz,.zip} Release Debug
 

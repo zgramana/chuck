@@ -45,8 +45,11 @@
 #include "ulib_machine.h"
 #include "util_math.h"
 #include "util_string.h"
-#include "hidio_sdl.h"
+// TODO EMSCRIPTEN: hidio support
+//#include "hidio_sdl.h"
+#ifndef __DISABLE_MIDI__
 #include "midiio_rtmidi.h"
+#endif
 #include <string>
 #include <map>
 

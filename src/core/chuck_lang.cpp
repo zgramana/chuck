@@ -38,7 +38,8 @@
 #include "chuck_vm.h"
 #include "chuck_errmsg.h"
 #include "chuck_ugen.h"
-#include "hidio_sdl.h"
+// TODO EMSCRIPTEN: HIDIO support
+//#include "hidio_sdl.h"
 #include "util_string.h"
 #include "util_serial.h"
 
@@ -1661,6 +1662,9 @@ static t_CKUINT HidOut_offset_data = 0;
 //-----------------------------------------------------------------------------
 t_CKBOOL init_class_HID( Chuck_Env * env )
 {
+    return TRUE;
+// TODO EMSCRIPTEN: HID
+/*
     Chuck_DL_Func * func = NULL;
 
     // init base class
@@ -2009,7 +2013,8 @@ t_CKBOOL init_class_HID( Chuck_Env * env )
     
     // end the class import
     type_engine_import_class_end( env );
-    
+    */
+    // THIS COMMENT WAS ALREADY THERE
     /*
     // init base class
     if( !type_engine_import_class_begin( env, "HidOut", "Object",
@@ -4295,10 +4300,11 @@ CK_DLL_MFUN( MidiOut_send )
 #endif // __DISABLE_MIDI__
 
 
+// TODO EMSCRIPTEN: HID
 //-----------------------------------------------------------------------------
 // HidMsg API
 //-----------------------------------------------------------------------------
-CK_DLL_MFUN( HidMsg_is_axis_motion )
+/*CK_DLL_MFUN( HidMsg_is_axis_motion )
 {
     RETURN->v_int = ( ( t_CKINT ) OBJ_MEMBER_INT( SELF, HidMsg_offset_type ) == 
                       CK_HID_JOYSTICK_AXIS ? 1 : 0 );
@@ -4692,7 +4698,7 @@ CK_DLL_MFUN( HidOut_send )
     // the_msg.data[2] = (t_CKBYTE)OBJ_MEMBER_INT(fake_msg, HidMsg_offset_data3);
     RETURN->v_int = mout->send( &the_msg );
 }
-
+*/
 
 //-----------------------------------------------------------------------------
 // MidiRW API

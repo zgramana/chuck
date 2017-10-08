@@ -642,6 +642,8 @@ Chuck_DL_Value * make_new_svar( const char * t, const char * n, t_CKBOOL c, void
 t_CKBOOL Chuck_DLL::load( const char * filename, const char * func, t_CKBOOL lazy )
 {
     // open
+    // TODO EMSCRIPTEN: don't allow DLLs for now
+    /*
     m_handle = dlopen( filename, lazy ? RTLD_LAZY : RTLD_NOW );
 
     // still not there
@@ -660,6 +662,7 @@ t_CKBOOL Chuck_DLL::load( const char * filename, const char * func, t_CKBOOL laz
     if( !lazy && !this->query() )
         return FALSE;
 
+    */
     return TRUE;
 }
 
@@ -850,12 +853,13 @@ const Chuck_DL_Query * Chuck_DLL::query( )
 //-----------------------------------------------------------------------------
 t_CKBOOL Chuck_DLL::unload()
 {
-    if( !m_handle && !m_query_func )
+    // TODO EMSCRIPTEN: don't allow DLLs
+//    if( !m_handle && !m_query_func )
     {
         m_last_error = "cannot unload dynamic library - nothing open...";
         return FALSE;
     }
-
+/*
     // if( m_detach_func ) m_detach_func( 0, NULL );
 
     if( m_handle )
@@ -867,6 +871,7 @@ t_CKBOOL Chuck_DLL::unload()
         m_query_func = NULL;
 
     return TRUE;
+    */
 }
 
 
@@ -878,13 +883,14 @@ t_CKBOOL Chuck_DLL::unload()
 //-----------------------------------------------------------------------------
 void * Chuck_DLL::get_addr( const char * symbol )
 {
-    if( !m_handle )
+    // TODO EMSCRIPTEN: don't allow DLLs
+//    if( !m_handle )
     {
         m_last_error = "cannot find addr from dynamic library - nothing open...";
         return FALSE;
     }
-    
-    return dlsym( m_handle, symbol );
+    // TODO EMSCRIPTEN: don't allow DLLs
+//    return dlsym( m_handle, symbol );
 }
 
 

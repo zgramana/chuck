@@ -46,6 +46,51 @@
 #include <cstring>
 #include <climits>
 
+extern const double NSAppKitVersionNumber;
+
+static const double NSAppKitVersionNumber10_0 = 577;
+static const double NSAppKitVersionNumber10_1 = 620;
+static const double NSAppKitVersionNumber10_2 = 663;
+static const double NSAppKitVersionNumber10_2_3 = 663.6;
+static const double NSAppKitVersionNumber10_3 = 743;
+static const double NSAppKitVersionNumber10_3_2 = 743.14;
+static const double NSAppKitVersionNumber10_3_3 = 743.2;
+static const double NSAppKitVersionNumber10_3_5 = 743.24;
+static const double NSAppKitVersionNumber10_3_7 = 743.33;
+static const double NSAppKitVersionNumber10_3_9 = 743.36;
+static const double NSAppKitVersionNumber10_4 = 824;
+static const double NSAppKitVersionNumber10_4_1 = 824.1;
+static const double NSAppKitVersionNumber10_4_3 = 824.23;
+static const double NSAppKitVersionNumber10_4_4 = 824.33;
+static const double NSAppKitVersionNumber10_4_7 = 824.41;
+static const double NSAppKitVersionNumber10_5 = 949;
+static const double NSAppKitVersionNumber10_5_2 = 949.27;
+static const double NSAppKitVersionNumber10_5_3 = 949.33;
+static const double NSAppKitVersionNumber10_6 = 1038;
+static const double NSAppKitVersionNumber10_7 = 1138;
+static const double NSAppKitVersionNumber10_7_2 = 1138.23;
+static const double NSAppKitVersionNumber10_7_3 = 1138.32;
+static const double NSAppKitVersionNumber10_7_4 = 1138.47;
+static const double NSAppKitVersionNumber10_8 = 1187;
+static const double NSAppKitVersionNumber10_9 = 1265;
+static const double NSAppKitVersionNumber10_10 = 1343;
+static const double NSAppKitVersionNumber10_10_2 = 1344;
+static const double NSAppKitVersionNumber10_10_3 = 1347;
+static const double NSAppKitVersionNumber10_10_4 = 1348;
+static const double NSAppKitVersionNumber10_10_5 = 1348;
+static const double NSAppKitVersionNumber10_10_Max = 1349;
+static const double NSAppKitVersionNumber10_11 = 1404;
+static const double NSAppKitVersionNumber10_11_1 = 1404.13;
+static const double NSAppKitVersionNumber10_11_2 = 1404.34;
+static const double NSAppKitVersionNumber10_11_3 = 1404.34;
+static const double NSAppKitVersionNumber10_12 = 1504;
+static const double NSAppKitVersionNumber10_12_1 = 1504.60;
+static const double NSAppKitVersionNumber10_12_2 = 1504.76;
+static const double NSAppKitVersionNumber10_13 = 1561;
+static const double NSAppKitVersionNumber10_13_1 = 1561.1;
+static const double NSAppKitVersionNumber10_13_2 = 1561.2;
+static const double NSAppKitVersionNumber10_13_4 = 1561.4;
+
 // Static variable definitions.
 const unsigned int RtApi::MAX_SAMPLE_RATES = 14;
 const unsigned int RtApi::SAMPLE_RATES[] = {
@@ -448,31 +493,106 @@ struct CoreHandle {
 #include <CoreServices/CoreServices.h>
 inline void getSystemVersion( unsigned & major, unsigned & minor, unsigned & bugfix )
 {
-    OSErr err;
-    SInt32 systemVersion, versionMajor, versionMinor, versionBugFix;
-    if ((err = Gestalt(gestaltSystemVersion, &systemVersion)) != noErr) goto fail;
-    if (systemVersion < 0x1040)
-    {
-        major = ((systemVersion & 0xF000) >> 12) * 10 +
-        ((systemVersion & 0x0F00) >> 8);
-        minor = (systemVersion & 0x00F0) >> 4;
-        bugfix = (systemVersion & 0x000F);
+//    OSErr err;
+//    SInt32 systemVersion, versionMajor, versionMinor, versionBugFix;
+//
+//    if ((err = Gestalt(gestaltSystemVersion, &systemVersion)) != noErr) goto fail;
+//    //if (NSAppKitVersionNumber )
+//    if (systemVersion < 0x1040)
+//    {
+//        major = ((systemVersion & 0xF000) >> 12) * 10 +
+//        ((systemVersion & 0x0F00) >> 8);
+//        minor = (systemVersion & 0x00F0) >> 4;
+//        bugfix = (systemVersion & 0x000F);
+//    }
+//    else
+//    {
+//        if ((err = Gestalt(gestaltSystemVersionMajor, &versionMajor)) != noErr) goto fail;
+//        if ((err = Gestalt(gestaltSystemVersionMinor, &versionMinor)) != noErr) goto fail;
+//        if ((err = Gestalt(gestaltSystemVersionBugFix, &versionBugFix)) != noErr) goto fail;
+//        major = versionMajor;
+//        minor = versionMinor;
+//        bugfix = versionBugFix;
+//    }
+//
+//fail:
+//    // um
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        /* On a 10.4.0 or earlier system */
+        major = 10;
+        minor = 4;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4_1) {
+        /* On a 10.4.2 or earlier system */
+        major = 10;
+        minor = 4;
+        bugfix = 2;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4_3) {
+        /* On a 10.4.3 or earlier system */
+        major = 10;
+        minor = 4;
+        bugfix = 3;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4_4) {
+        /* On a 10.4.4 or earlier system */
+        major = 10;
+        minor = 4;
+        bugfix = 4;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4_7) {
+        /* On a 10.4.7 or earlier system */
+        major = 10;
+        minor = 4;
+        bugfix = 7;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5) {
+        /* On a 10.9.x or earlier system */
+        major = 10;
+        minor = 5;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6) {
+        /* On a 10.6.x or earlier system */
+        major = 10;
+        minor = 6;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_7) {
+        /* On a 10.7.x or earlier system */
+        major = 10;
+        minor = 7;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8) {
+        /* On a 10.8.x or earlier system */
+        major = 10;
+        minor = 8;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9) {
+        /* On a 10.9.x or earlier system */
+        major = 10;
+        minor = 9;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max) {
+        /* on a 10.10.x system */
+        major = 10;
+        minor = 10;
+        bugfix = 10;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11_3) {
+        /* on a 10.11 or 10.11.x system */
+        major = 10;
+        minor = 11;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12_2) {
+        /* on a 10.12 or 10.12.x system */
+        major = 10;
+        minor = 12;
+        bugfix = 0;
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_13_4) {
+        /* On a 10.13.4 or earlier system */
+        major = 10;
+        minor = 4;
+        bugfix = 4;
+    } else {
+        /* on a 10.14 or later system */
+        major = 10;
+        minor = 13;
+        bugfix = 0;
     }
-    else
-    {
-        if ((err = Gestalt(gestaltSystemVersionMajor, &versionMajor)) != noErr) goto fail;
-        if ((err = Gestalt(gestaltSystemVersionMinor, &versionMinor)) != noErr) goto fail;
-        if ((err = Gestalt(gestaltSystemVersionBugFix, &versionBugFix)) != noErr) goto fail;
-        major = versionMajor;
-        minor = versionMinor;
-        bugfix = versionBugFix;
-    }
-    
-fail:
-    // um
-    major = 10;
-    minor = 0;
-    bugfix = 0;
 }
 
 RtApiCore :: RtApiCore()
